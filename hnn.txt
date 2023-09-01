@@ -1,0 +1,46 @@
+#include "thingProperties.h"
+#include <ArduinoIoTCloud.h>
+#include <Wire.h>
+
+#include <Arduino_LSM9DS1.h>  //Arduino LSM9DS1 library
+
+// Define PIR motion sensor pin
+const int pirPin = 4;
+
+WiFiClient client;
+
+void setup() {
+  // Initialize serial and wait for port to open:
+  Serial.begin(9600);
+  delay(1500);
+
+  // Initialize PIR sensor
+  pinMode(pirPin, INPUT);
+
+  // Defined in thingProperties.h
+  initProperties();
+
+  // Connect to Arduino IoT Cloud
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
+}
+
+void loop() {
+  ArduinoCloud.update();
+
+  int motionValue = digitalRead(pirPin); // Read the PIR sensor value (HIGH if motion detected, LOW if not)
+
+  if (motionValue == HIGH) {
+    mot_ion = true;
+    Serial.println("Motion detected!");
+    show = "Motion detected!";
+  } else {
+    mot_ion = false;
+    Serial.println("No motion detected.");
+    show = "No motion not detected.";
+  }
+
+  delay(2000);
+}
